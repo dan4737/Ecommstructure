@@ -1,5 +1,5 @@
 const express = require('express');
-const connectDB = require('./config/db');
+const { connectDB, sequelize } = require('./config/db');
 require('dotenv').config();
 
 const authRoutes = require('./routes/auth');
@@ -22,6 +22,11 @@ app.use('/api/products', productRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/payment', paymentRoutes);
+
+// Sync Sequelize Models
+sequelize.sync({ force: false }) // Change to `true` if you want to reset tables
+    .then(() => console.log('Database synced'))
+    .catch((err) => console.error('Error syncing database:', err));
 
 // Start Server
 const PORT = process.env.PORT || 5000;
